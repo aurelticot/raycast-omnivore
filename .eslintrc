@@ -1,0 +1,9 @@
+{
+  "root": true,
+  "extends": ["@raycast", "plugin:prettier/recommended"],
+  "plugins": ["prettier", "promise"],
+  "rules": {
+    "no-console": "warn",
+    "prettier/prettier": "warn"
+  }
+}
