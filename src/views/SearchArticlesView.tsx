@@ -11,7 +11,7 @@ import {
   formatRelativeDateFromNow,
 } from "~/utils";
 
-const preferences = getPreferenceValues<Preferences.SearchItems>();
+const preferences = getPreferenceValues<Preferences.SearchArticles>();
 const maxItems = Number(preferences.maxItems);
 
 export function SearchArticlesView() {

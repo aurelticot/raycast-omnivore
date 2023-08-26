@@ -16,7 +16,7 @@ type SaveArticleValues = {
 };
 
 export type SaveArticleViewProps = LaunchProps<{
-  arguments: Arguments.SaveLink;
+  arguments: Arguments.SaveArticle;
   draftValues: SaveArticleValues;
 }>;
 
