@@ -28,7 +28,7 @@ export function useArticleMutations() {
     async (input: CreateArticleSavingRequestInput) => {
       const toast = await showToast({
         style: Toast.Style.Animated,
-        title: `Saving link`,
+        title: `Saving article`,
       });
 
       try {
@@ -40,16 +40,16 @@ export function useArticleMutations() {
         );
 
         if ("error" in result.createArticleSavingRequest) {
-          throw new Error("Something went wrong saving the link!");
+          throw new Error("Something went wrong saving the article!");
         }
 
         toast.style = Toast.Style.Success;
-        toast.title = `Link saved!`;
+        toast.title = `Article saved!`;
 
         // TODO: Return the info of the saved article
       } catch (error: unknown) {
         toast.style = Toast.Style.Failure;
-        toast.title = `Failed to save the link!`;
+        toast.title = `Failed to save the article!`;
         if (error instanceof Error) {
           toast.message = error.message;
         }

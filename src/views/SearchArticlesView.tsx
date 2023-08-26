@@ -14,7 +14,7 @@ import {
 const preferences = getPreferenceValues<Preferences.SearchItems>();
 const maxItems = Number(preferences.maxItems);
 
-export function SearchItemsView() {
+export function SearchArticlesView() {
   const { user } = useUserQuery();
 
   const [savedSearchQuery, setSavedSearchQuery] = useState<string | undefined>(
@@ -62,8 +62,8 @@ export function SearchItemsView() {
       onSearchTextChange={setUserQuery}
       searchBarPlaceholder={
         items && totalCount
-          ? `Search ${totalCount} items...`
-          : `Search items...`
+          ? `Search ${totalCount} articles...`
+          : `Search articles...`
       }
       isLoading={isLoading}
       isShowingDetail={showingDetail}

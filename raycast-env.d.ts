@@ -16,22 +16,22 @@ type ExtensionPreferences = {
 declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
-  /** Preferences accessible in the `search-items` command */
-  export type SearchItems = ExtensionPreferences & {
+  /** Preferences accessible in the `search-articles` command */
+  export type SearchArticles = ExtensionPreferences & {
   /** Colored Tags - Use the color of the tags defined in Omnivore in Raycast */
   "coloredTags": boolean,
-  /** Max items - Max items shown in the list */
+  /** Max articles - Max articles shown in the list. The more, the slower. */
   "maxItems": "25" | "50" | "100" | "250" | "500"
 }
-  /** Preferences accessible in the `save-link` command */
-  export type SaveLink = ExtensionPreferences & {}
+  /** Preferences accessible in the `save-article` command */
+  export type SaveArticle = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
-  /** Arguments passed to the `search-items` command */
-  export type SearchItems = {}
-  /** Arguments passed to the `save-link` command */
-  export type SaveLink = {
+  /** Arguments passed to the `search-articles` command */
+  export type SearchArticles = {}
+  /** Arguments passed to the `save-article` command */
+  export type SaveArticle = {
   /** https://www.raycast.com/blog/hello-world */
   "url": string
 }

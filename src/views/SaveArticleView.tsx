@@ -11,16 +11,16 @@ import { minLength, safeParse, string, url } from "valibot";
 
 import { useArticleMutations } from "~/hooks";
 
-type SaveLinkValues = {
+type SaveArticleValues = {
   url: string;
 };
 
-export type SaveLinkViewProps = LaunchProps<{
+export type SaveArticleViewProps = LaunchProps<{
   arguments: Arguments.SaveLink;
-  draftValues: SaveLinkValues;
+  draftValues: SaveArticleValues;
 }>;
 
-export function SaveLinkView(props: SaveLinkViewProps) {
+export function SaveArticleView(props: SaveArticleViewProps) {
   const { arguments: args, draftValues } = props;
 
   const defaultUrl = args.url || draftValues?.url;
@@ -28,7 +28,7 @@ export function SaveLinkView(props: SaveLinkViewProps) {
   const [urlError, setUrlError] = useState<string | undefined>();
   const { createArticle } = useArticleMutations();
 
-  const handleSubmit = useCallback(async (values: SaveLinkValues) => {
+  const handleSubmit = useCallback(async (values: SaveArticleValues) => {
     const error = validateUrl(values.url);
     if (error) {
       setUrlError(error);

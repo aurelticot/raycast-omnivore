@@ -25,7 +25,7 @@ export function useArchiveMutations() {
     async (id: string, archived: boolean) => {
       const toast = await showToast({
         style: Toast.Style.Animated,
-        title: archived ? "Archiving the item" : "Unarchiving the item",
+        title: archived ? "Archiving the article" : "Unarchiving the article",
       });
 
       try {
@@ -39,7 +39,7 @@ export function useArchiveMutations() {
         }
 
         toast.style = Toast.Style.Success;
-        toast.title = archived ? "Item archived!" : "Item unarchived!";
+        toast.title = archived ? "Article archived!" : "Article unarchived!";
       } catch (error: unknown) {
         toast.style = Toast.Style.Failure;
         toast.title = archived ? "Failed to archive!" : "Failed to unarchive!";

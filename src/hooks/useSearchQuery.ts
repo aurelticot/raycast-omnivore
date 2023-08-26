@@ -96,11 +96,11 @@ export function useSearchQuery(options?: SearchQueryInputs) {
           return result.search;
         }
 
-        throw new Error("Something went wrong getting the items");
+        throw new Error("Something went wrong getting the articles");
       } catch (error: unknown) {
         await showToast({
           style: Toast.Style.Failure,
-          title: "Error fetching the items",
+          title: "Error fetching the articles",
           message: error instanceof Error ? error.message : undefined,
         });
       }

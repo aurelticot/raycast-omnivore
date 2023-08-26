@@ -1,2 +1,2 @@
-export * from "./SaveLinkView";
-export * from "./SearchItemsView";
+export * from "./SaveArticleView";
+export * from "./SearchArticlesView";

@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "raycast-omnivore",
+  "name": "omnivore",
   "title": "Omnivore",
   "description": "Search and save articles in your Omnivore",
   "icon": "extension-icon.png",
@@ -12,9 +12,9 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "search-items",
-      "title": "Search Items",
-      "description": "Search and display your items from Omnivore",
+      "name": "search-articles",
+      "title": "Search Articles",
+      "description": "Search and display your articles from Omnivore",
       "mode": "view",
       "preferences": [
         {
@@ -28,7 +28,7 @@
         },
         {
           "name": "maxItems",
-          "title": "Max items",
+          "title": "Max articles",
           "type": "dropdown",
           "default": "25",
           "data": [
@@ -53,15 +53,15 @@
               "value": "500"
             }
           ],
-          "description": "Max items shown in the list",
+          "description": "Max articles shown in the list. The more, the slower.",
           "required": false
         }
       ]
     },
     {
-      "name": "save-link",
-      "title": "Save Link",
-      "description": "Save a link in your Omnivore",
+      "name": "save-article",
+      "title": "Save Article",
+      "description": "Save an article in your Omnivore",
       "mode": "view",
       "arguments": [
         {
