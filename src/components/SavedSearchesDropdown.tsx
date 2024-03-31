@@ -1,9 +1,9 @@
 import { List } from "@raycast/api";
 import { useCachedState } from "@raycast/utils";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { DEFAULT_SAVED_SEARCH, SAVED_SEARCHES } from "~/constants";
-import { useAllLabelsQuery } from "~/hooks";
+import { useAllLabelsQuery, useSavedFiltersQuery } from "~/hooks";
 
 export type SavedSearchesDropdownProps = {
   onChange: (newQuery: string | undefined) => void;
@@ -19,13 +19,19 @@ export function SavedSearchesDropdown(props: SavedSearchesDropdownProps) {
     DEFAULT_SAVED_SEARCH
   );
 
+  const { savedFilters } = useSavedFiltersQuery();
   const { labels } = useAllLabelsQuery();
+
+  const savedSearches = useMemo(
+    () => savedFilters ?? SAVED_SEARCHES,
+    [savedFilters]
+  );
 
   const sendQuery = useCallback(
     (value: string) => {
       const query = value.startsWith("label:")
         ? value
-        : SAVED_SEARCHES.find((savedSearch) => savedSearch.id === value)?.query;
+        : savedSearches.find((savedSearch) => savedSearch.id === value)?.filter;
       onChange(query);
     },
     [onChange]
@@ -51,10 +57,10 @@ export function SavedSearchesDropdown(props: SavedSearchesDropdownProps) {
       onChange={handleChange}
     >
       <List.Dropdown.Section title="Saved Searches">
-        {SAVED_SEARCHES.map((savedSearch) => (
+        {savedSearches.map((savedSearch) => (
           <List.Dropdown.Item
             key={savedSearch.id}
-            title={savedSearch.label}
+            title={savedSearch.name}
             value={savedSearch.id}
           />
         ))}

@@ -1,4 +1,4 @@
-import { SavedSearch } from "~/types";
+import { Filter } from "~/api";
 
 export const OMNIVORE_ACCENT_COLOR = "#F6E0A0";
 
@@ -7,36 +7,48 @@ export const OMNIVORE_CLOUD_API_BASE_URL = "https://api-prod.omnivore.app";
 
 export const OMNIVORE_GRAPHQL_API_URL_PATH = "/api/graphql";
 
-export const SAVED_SEARCHES: SavedSearch[] = [
+export const SAVED_SEARCHES: Filter[] = [
   {
     id: "inbox",
-    label: "Inbox",
-    query: "in:inbox",
+    name: "Inbox",
+    filter: "in:inbox",
+    position: 0,
+    createdAt: "",
   },
   {
     id: "continue-reading",
-    label: "Continue Reading",
-    query: "in:inbox sort:read-desc is:unread",
+    name: "Continue Reading",
+    filter: "in:inbox sort:read-desc is:unread",
+    position: 1,
+    createdAt: "",
   },
   {
     id: "read-later",
-    label: "Read Later",
-    query: "in:library",
+    name: "Read Later",
+    filter: "in:library",
+    position: 2,
+    createdAt: "",
   },
   {
     id: "highlights",
-    label: "Highlights",
-    query: "has:highlights",
+    name: "Highlights",
+    filter: "has:highlights",
+    position: 3,
+    createdAt: "",
   },
   {
     id: "unlabeled",
-    label: "Unlabeled",
-    query: "no:label",
+    name: "Unlabeled",
+    filter: "no:label",
+    position: 4,
+    createdAt: "",
   },
   {
     id: "archived",
-    label: "Archived",
-    query: "in:archive",
+    name: "Archived",
+    filter: "in:archive",
+    position: 5,
+    createdAt: "",
   },
 ];
 
