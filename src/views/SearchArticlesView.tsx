@@ -86,10 +86,9 @@ export function SearchArticlesView() {
                           .filter(
                             (highlight) => highlight.type === HighlightType.Note
                           )
-                          .reduce<string | null | undefined>(
-                            (_prev, current) => current.annotation,
-                            undefined
-                          ),
+                          .reduce<
+                            string | null | undefined
+                          >((_prev, current) => current.annotation, undefined),
                       highlights: (item.highlights || [])
                         .filter(
                           (highlight) =>

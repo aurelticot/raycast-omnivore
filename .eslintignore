@@ -1,3 +1,5 @@
 node_modules
 build
 src/**/*.graphql
+src/api/generated
+raycast-env.d.ts

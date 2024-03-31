@@ -86,7 +86,7 @@ export function validateUrl(value: string | undefined) {
   const result = safeParse(urlSchema, value);
 
   if (!result.success) {
-    return result.error.message;
+    return result.issues.map((issue) => issue.message).join(", ");
   }
   return;
 }
