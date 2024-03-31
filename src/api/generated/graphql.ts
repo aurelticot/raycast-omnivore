@@ -15,6 +15,30 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Date: { input: any; output: any; }
+  JSON: { input: any; output: any; }
+};
+
+export type AddDiscoverFeedError = {
+  __typename?: 'AddDiscoverFeedError';
+  errorCodes: Array<AddDiscoverFeedErrorCode>;
+};
+
+export enum AddDiscoverFeedErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Conflict = 'CONFLICT',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type AddDiscoverFeedInput = {
+  url: Scalars['String']['input'];
+};
+
+export type AddDiscoverFeedResult = AddDiscoverFeedError | AddDiscoverFeedSuccess;
+
+export type AddDiscoverFeedSuccess = {
+  __typename?: 'AddDiscoverFeedSuccess';
+  feed: DiscoverFeed;
 };
 
 export type AddPopularReadError = {
@@ -94,6 +118,9 @@ export type Article = {
   contentReader: ContentReader;
   createdAt: Scalars['Date']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  directionality?: Maybe<DirectionalityType>;
+  feedContent?: Maybe<Scalars['String']['output']>;
+  folder: Scalars['String']['output'];
   hasContent?: Maybe<Scalars['Boolean']['output']>;
   hash: Scalars['String']['output'];
   highlights: Array<Highlight>;
@@ -125,7 +152,7 @@ export type Article = {
   title: Scalars['String']['output'];
   unsubHttpUrl?: Maybe<Scalars['String']['output']>;
   unsubMailTo?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   uploadFileId?: Maybe<Scalars['ID']['output']>;
   url: Scalars['String']['output'];
   wordsCount?: Maybe<Scalars['Int']['output']>;
@@ -168,7 +195,7 @@ export type ArticleSavingRequest = {
   id: Scalars['ID']['output'];
   slug: Scalars['String']['output'];
   status: ArticleSavingRequestStatus;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   url: Scalars['String']['output'];
   user: User;
   /** @deprecated userId has been replaced with user */
@@ -190,6 +217,7 @@ export type ArticleSavingRequestResult = ArticleSavingRequestError | ArticleSavi
 
 export enum ArticleSavingRequestStatus {
   Archived = 'ARCHIVED',
+  ContentNotFetched = 'CONTENT_NOT_FETCHED',
   Deleted = 'DELETED',
   Failed = 'FAILED',
   Processing = 'PROCESSING',
@@ -244,7 +272,8 @@ export enum BulkActionType {
   AddLabels = 'ADD_LABELS',
   Archive = 'ARCHIVE',
   Delete = 'DELETE',
-  MarkAsRead = 'MARK_AS_READ'
+  MarkAsRead = 'MARK_AS_READ',
+  MoveToFolder = 'MOVE_TO_FOLDER'
 }
 
 export enum ContentReader {
@@ -270,8 +299,12 @@ export enum CreateArticleErrorCode {
 
 export type CreateArticleInput = {
   articleSavingRequestId?: InputMaybe<Scalars['ID']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
   labels?: InputMaybe<Array<CreateLabelInput>>;
   preparedDocument?: InputMaybe<PreparedDocumentInput>;
+  publishedAt?: InputMaybe<Scalars['Date']['input']>;
+  rssFeedUrl?: InputMaybe<Scalars['String']['input']>;
+  savedAt?: InputMaybe<Scalars['Date']['input']>;
   skipParsing?: InputMaybe<Scalars['Boolean']['input']>;
   source?: InputMaybe<Scalars['String']['input']>;
   state?: InputMaybe<ArticleSavingRequestStatus>;
@@ -352,6 +385,7 @@ export enum CreateHighlightErrorCode {
 export type CreateHighlightInput = {
   annotation?: InputMaybe<Scalars['String']['input']>;
   articleId: Scalars['ID']['input'];
+  color?: InputMaybe<Scalars['String']['input']>;
   highlightPositionAnchorIndex?: InputMaybe<Scalars['Int']['input']>;
   highlightPositionPercent?: InputMaybe<Scalars['Float']['input']>;
   html?: InputMaybe<Scalars['String']['input']>;
@@ -359,6 +393,7 @@ export type CreateHighlightInput = {
   patch?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   quote?: InputMaybe<Scalars['String']['input']>;
+  representation?: InputMaybe<RepresentationType>;
   sharedAt?: InputMaybe<Scalars['Date']['input']>;
   shortId: Scalars['String']['input'];
   suffix?: InputMaybe<Scalars['String']['input']>;
@@ -430,6 +465,12 @@ export enum CreateNewsletterEmailErrorCode {
   BadRequest = 'BAD_REQUEST',
   Unauthorized = 'UNAUTHORIZED'
 }
+
+export type CreateNewsletterEmailInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
 
 export type CreateNewsletterEmailResult = CreateNewsletterEmailError | CreateNewsletterEmailSuccess;
 
@@ -506,6 +547,51 @@ export type DeleteAccountResult = DeleteAccountError | DeleteAccountSuccess;
 export type DeleteAccountSuccess = {
   __typename?: 'DeleteAccountSuccess';
   userID: Scalars['ID']['output'];
+};
+
+export type DeleteDiscoverArticleError = {
+  __typename?: 'DeleteDiscoverArticleError';
+  errorCodes: Array<DeleteDiscoverArticleErrorCode>;
+};
+
+export enum DeleteDiscoverArticleErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type DeleteDiscoverArticleInput = {
+  discoverArticleId: Scalars['ID']['input'];
+};
+
+export type DeleteDiscoverArticleResult = DeleteDiscoverArticleError | DeleteDiscoverArticleSuccess;
+
+export type DeleteDiscoverArticleSuccess = {
+  __typename?: 'DeleteDiscoverArticleSuccess';
+  id: Scalars['ID']['output'];
+};
+
+export type DeleteDiscoverFeedError = {
+  __typename?: 'DeleteDiscoverFeedError';
+  errorCodes: Array<DeleteDiscoverFeedErrorCode>;
+};
+
+export enum DeleteDiscoverFeedErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Conflict = 'CONFLICT',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type DeleteDiscoverFeedInput = {
+  feedId: Scalars['ID']['input'];
+};
+
+export type DeleteDiscoverFeedResult = DeleteDiscoverFeedError | DeleteDiscoverFeedSuccess;
+
+export type DeleteDiscoverFeedSuccess = {
+  __typename?: 'DeleteDiscoverFeedSuccess';
+  id: Scalars['String']['output'];
 };
 
 export type DeleteFilterError = {
@@ -713,6 +799,117 @@ export type DeviceTokensSuccess = {
   deviceTokens: Array<DeviceToken>;
 };
 
+export enum DirectionalityType {
+  Ltr = 'LTR',
+  Rtl = 'RTL'
+}
+
+export type DiscoverFeed = {
+  __typename?: 'DiscoverFeed';
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  link: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  visibleName?: Maybe<Scalars['String']['output']>;
+};
+
+export type DiscoverFeedArticle = {
+  __typename?: 'DiscoverFeedArticle';
+  author?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  feed: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  publishedDate?: Maybe<Scalars['Date']['output']>;
+  savedId?: Maybe<Scalars['String']['output']>;
+  savedLinkUrl?: Maybe<Scalars['String']['output']>;
+  siteName?: Maybe<Scalars['String']['output']>;
+  slug: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type DiscoverFeedError = {
+  __typename?: 'DiscoverFeedError';
+  errorCodes: Array<DiscoverFeedErrorCode>;
+};
+
+export enum DiscoverFeedErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type DiscoverFeedResult = DiscoverFeedError | DiscoverFeedSuccess;
+
+export type DiscoverFeedSuccess = {
+  __typename?: 'DiscoverFeedSuccess';
+  feeds: Array<Maybe<DiscoverFeed>>;
+};
+
+export type DiscoverTopic = {
+  __typename?: 'DiscoverTopic';
+  description: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type EditDiscoverFeedError = {
+  __typename?: 'EditDiscoverFeedError';
+  errorCodes: Array<EditDiscoverFeedErrorCode>;
+};
+
+export enum EditDiscoverFeedErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type EditDiscoverFeedInput = {
+  feedId: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type EditDiscoverFeedResult = EditDiscoverFeedError | EditDiscoverFeedSuccess;
+
+export type EditDiscoverFeedSuccess = {
+  __typename?: 'EditDiscoverFeedSuccess';
+  id: Scalars['ID']['output'];
+};
+
+export type EmptyTrashError = {
+  __typename?: 'EmptyTrashError';
+  errorCodes: Array<EmptyTrashErrorCode>;
+};
+
+export enum EmptyTrashErrorCode {
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type EmptyTrashResult = EmptyTrashError | EmptyTrashSuccess;
+
+export type EmptyTrashSuccess = {
+  __typename?: 'EmptyTrashSuccess';
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type ExportToIntegrationError = {
+  __typename?: 'ExportToIntegrationError';
+  errorCodes: Array<ExportToIntegrationErrorCode>;
+};
+
+export enum ExportToIntegrationErrorCode {
+  FailedToCreateTask = 'FAILED_TO_CREATE_TASK',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type ExportToIntegrationResult = ExportToIntegrationError | ExportToIntegrationSuccess;
+
+export type ExportToIntegrationSuccess = {
+  __typename?: 'ExportToIntegrationSuccess';
+  task: Task;
+};
+
 export type Feature = {
   __typename?: 'Feature';
   createdAt: Scalars['Date']['output'];
@@ -721,7 +918,21 @@ export type Feature = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   token: Scalars['String']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
+};
+
+export type Feed = {
+  __typename?: 'Feed';
+  author?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['Date']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
+  publishedAt?: Maybe<Scalars['Date']['output']>;
+  title: Scalars['String']['output'];
+  type?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['Date']['output']>;
+  url: Scalars['String']['output'];
 };
 
 export type FeedArticle = {
@@ -761,16 +972,73 @@ export type FeedArticlesSuccess = {
   pageInfo: PageInfo;
 };
 
+export type FeedEdge = {
+  __typename?: 'FeedEdge';
+  cursor: Scalars['String']['output'];
+  node: Feed;
+};
+
+export type FeedsError = {
+  __typename?: 'FeedsError';
+  errorCodes: Array<FeedsErrorCode>;
+};
+
+export enum FeedsErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type FeedsInput = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortParams>;
+};
+
+export type FeedsResult = FeedsError | FeedsSuccess;
+
+export type FeedsSuccess = {
+  __typename?: 'FeedsSuccess';
+  edges: Array<FeedEdge>;
+  pageInfo: PageInfo;
+};
+
+export type FetchContentError = {
+  __typename?: 'FetchContentError';
+  errorCodes: Array<FetchContentErrorCode>;
+};
+
+export enum FetchContentErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type FetchContentResult = FetchContentError | FetchContentSuccess;
+
+export type FetchContentSuccess = {
+  __typename?: 'FetchContentSuccess';
+  success: Scalars['Boolean']['output'];
+};
+
+export enum FetchContentType {
+  Always = 'ALWAYS',
+  Never = 'NEVER',
+  WhenEmpty = 'WHEN_EMPTY'
+}
+
 export type Filter = {
   __typename?: 'Filter';
-  category: Scalars['String']['output'];
+  category?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Date']['output'];
+  defaultFilter?: Maybe<Scalars['Boolean']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   filter: Scalars['String']['output'];
+  folder?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   position: Scalars['Int']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
+  visible?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type FiltersError = {
@@ -812,6 +1080,41 @@ export type GenerateApiKeyResult = GenerateApiKeyError | GenerateApiKeySuccess;
 export type GenerateApiKeySuccess = {
   __typename?: 'GenerateApiKeySuccess';
   apiKey: ApiKey;
+};
+
+export type GetDiscoverFeedArticleError = {
+  __typename?: 'GetDiscoverFeedArticleError';
+  errorCodes: Array<GetDiscoverFeedArticleErrorCode>;
+};
+
+export enum GetDiscoverFeedArticleErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type GetDiscoverFeedArticleResults = GetDiscoverFeedArticleError | GetDiscoverFeedArticleSuccess;
+
+export type GetDiscoverFeedArticleSuccess = {
+  __typename?: 'GetDiscoverFeedArticleSuccess';
+  discoverArticles?: Maybe<Array<Maybe<DiscoverFeedArticle>>>;
+  pageInfo: PageInfo;
+};
+
+export type GetDiscoverTopicError = {
+  __typename?: 'GetDiscoverTopicError';
+  errorCodes: Array<GetDiscoverTopicErrorCode>;
+};
+
+export enum GetDiscoverTopicErrorCode {
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type GetDiscoverTopicResults = GetDiscoverTopicError | GetDiscoverTopicSuccess;
+
+export type GetDiscoverTopicSuccess = {
+  __typename?: 'GetDiscoverTopicSuccess';
+  discoverTopics?: Maybe<Array<DiscoverTopic>>;
 };
 
 export type GetFollowersError = {
@@ -909,6 +1212,7 @@ export type GroupsSuccess = {
 export type Highlight = {
   __typename?: 'Highlight';
   annotation?: Maybe<Scalars['String']['output']>;
+  color?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Date']['output'];
   createdByMe: Scalars['Boolean']['output'];
   highlightPositionAnchorIndex?: Maybe<Scalars['Int']['output']>;
@@ -921,11 +1225,12 @@ export type Highlight = {
   quote?: Maybe<Scalars['String']['output']>;
   reactions: Array<Reaction>;
   replies: Array<HighlightReply>;
+  representation: RepresentationType;
   sharedAt?: Maybe<Scalars['Date']['output']>;
   shortId: Scalars['String']['output'];
   suffix?: Maybe<Scalars['String']['output']>;
   type: HighlightType;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   user: User;
 };
 
@@ -935,7 +1240,7 @@ export type HighlightReply = {
   highlight: Highlight;
   id: Scalars['ID']['output'];
   text: Scalars['String']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   user: User;
 };
 
@@ -967,16 +1272,40 @@ export type ImportFromIntegrationSuccess = {
   success: Scalars['Boolean']['output'];
 };
 
+export enum ImportItemState {
+  All = 'ALL',
+  Archived = 'ARCHIVED',
+  Unarchived = 'UNARCHIVED',
+  Unread = 'UNREAD'
+}
+
 export type Integration = {
   __typename?: 'Integration';
   createdAt: Scalars['Date']['output'];
   enabled: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  settings?: Maybe<Scalars['JSON']['output']>;
   taskName?: Maybe<Scalars['String']['output']>;
   token: Scalars['String']['output'];
   type: IntegrationType;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
+};
+
+export type IntegrationError = {
+  __typename?: 'IntegrationError';
+  errorCodes: Array<IntegrationErrorCode>;
+};
+
+export enum IntegrationErrorCode {
+  NotFound = 'NOT_FOUND'
+}
+
+export type IntegrationResult = IntegrationError | IntegrationSuccess;
+
+export type IntegrationSuccess = {
+  __typename?: 'IntegrationSuccess';
+  integration: Integration;
 };
 
 export enum IntegrationType {
@@ -1028,6 +1357,7 @@ export type Label = {
   internal?: Maybe<Scalars['Boolean']['output']>;
   name: Scalars['String']['output'];
   position?: Maybe<Scalars['Int']['output']>;
+  source?: Maybe<Scalars['String']['output']>;
 };
 
 export type LabelsError = {
@@ -1079,7 +1409,7 @@ export type Link = {
   shareInfo: LinkShareInfo;
   shareStats: ShareStats;
   slug: Scalars['String']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   url: Scalars['String']['output'];
 };
 
@@ -1161,6 +1491,7 @@ export enum MergeHighlightErrorCode {
 export type MergeHighlightInput = {
   annotation?: InputMaybe<Scalars['String']['input']>;
   articleId: Scalars['ID']['input'];
+  color?: InputMaybe<Scalars['String']['input']>;
   highlightPositionAnchorIndex?: InputMaybe<Scalars['Int']['input']>;
   highlightPositionPercent?: InputMaybe<Scalars['Float']['input']>;
   html?: InputMaybe<Scalars['String']['input']>;
@@ -1169,6 +1500,7 @@ export type MergeHighlightInput = {
   patch: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   quote: Scalars['String']['input'];
+  representation?: InputMaybe<RepresentationType>;
   shortId: Scalars['ID']['input'];
   suffix?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1227,30 +1559,49 @@ export type MoveLabelSuccess = {
   label: Label;
 };
 
+export type MoveToFolderError = {
+  __typename?: 'MoveToFolderError';
+  errorCodes: Array<MoveToFolderErrorCode>;
+};
+
+export enum MoveToFolderErrorCode {
+  AlreadyExists = 'ALREADY_EXISTS',
+  BadRequest = 'BAD_REQUEST',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type MoveToFolderResult = MoveToFolderError | MoveToFolderSuccess;
+
+export type MoveToFolderSuccess = {
+  __typename?: 'MoveToFolderSuccess';
+  success: Scalars['Boolean']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addDiscoverFeed: AddDiscoverFeedResult;
   addPopularRead: AddPopularReadResult;
   bulkAction: BulkActionResult;
   createArticle: CreateArticleResult;
   createArticleSavingRequest: CreateArticleSavingRequestResult;
   createGroup: CreateGroupResult;
   createHighlight: CreateHighlightResult;
-  createHighlightReply: CreateHighlightReplyResult;
   createLabel: CreateLabelResult;
   createNewsletterEmail: CreateNewsletterEmailResult;
-  createReaction: CreateReactionResult;
-  createReminder: CreateReminderResult;
   deleteAccount: DeleteAccountResult;
+  deleteDiscoverArticle: DeleteDiscoverArticleResult;
+  deleteDiscoverFeed: DeleteDiscoverFeedResult;
   deleteFilter: DeleteFilterResult;
   deleteHighlight: DeleteHighlightResult;
-  deleteHighlightReply: DeleteHighlightReplyResult;
   deleteIntegration: DeleteIntegrationResult;
   deleteLabel: DeleteLabelResult;
   deleteNewsletterEmail: DeleteNewsletterEmailResult;
-  deleteReaction: DeleteReactionResult;
-  deleteReminder: DeleteReminderResult;
   deleteRule: DeleteRuleResult;
   deleteWebhook: DeleteWebhookResult;
+  editDiscoverFeed: EditDiscoverFeedResult;
+  emptyTrash: EmptyTrashResult;
+  exportToIntegration: ExportToIntegrationResult;
+  fetchContent: FetchContentResult;
   generateApiKey: GenerateApiKeyResult;
   googleLogin: LoginResult;
   googleSignup: GoogleSignupResult;
@@ -1262,12 +1613,14 @@ export type Mutation = {
   mergeHighlight: MergeHighlightResult;
   moveFilter: MoveFilterResult;
   moveLabel: MoveLabelResult;
+  moveToFolder: MoveToFolderResult;
   optInFeature: OptInFeatureResult;
   recommend: RecommendResult;
   recommendHighlights: RecommendHighlightsResult;
   reportItem: ReportItemResult;
   revokeApiKey: RevokeApiKeyResult;
   saveArticleReadingProgress: SaveArticleReadingProgressResult;
+  saveDiscoverArticle: SaveDiscoverArticleResult;
   saveFile: SaveResult;
   saveFilter: SaveFilterResult;
   savePage: SaveResult;
@@ -1275,30 +1628,31 @@ export type Mutation = {
   setBookmarkArticle: SetBookmarkArticleResult;
   setDeviceToken: SetDeviceTokenResult;
   setFavoriteArticle: SetFavoriteArticleResult;
-  setFollow: SetFollowResult;
   setIntegration: SetIntegrationResult;
   setLabels: SetLabelsResult;
   setLabelsForHighlight: SetLabelsResult;
   setLinkArchived: ArchiveLinkResult;
   setRule: SetRuleResult;
-  setShareArticle: SetShareArticleResult;
-  setShareHighlight: SetShareHighlightResult;
   setUserPersonalization: SetUserPersonalizationResult;
   setWebhook: SetWebhookResult;
   subscribe: SubscribeResult;
   unsubscribe: UnsubscribeResult;
+  updateEmail: UpdateEmailResult;
+  updateFilter: UpdateFilterResult;
   updateHighlight: UpdateHighlightResult;
-  updateHighlightReply: UpdateHighlightReplyResult;
   updateLabel: UpdateLabelResult;
-  updateLinkShareInfo: UpdateLinkShareInfoResult;
+  updateNewsletterEmail: UpdateNewsletterEmailResult;
   updatePage: UpdatePageResult;
-  updateReminder: UpdateReminderResult;
-  updateSharedComment: UpdateSharedCommentResult;
   updateSubscription: UpdateSubscriptionResult;
   updateUser: UpdateUserResult;
   updateUserProfile: UpdateUserProfileResult;
   uploadFileRequest: UploadFileRequestResult;
   uploadImportFile: UploadImportFileResult;
+};
+
+
+export type MutationAddDiscoverFeedArgs = {
+  input: AddDiscoverFeedInput;
 };
 
 
@@ -1309,6 +1663,7 @@ export type MutationAddPopularReadArgs = {
 
 export type MutationBulkActionArgs = {
   action: BulkActionType;
+  arguments?: InputMaybe<Scalars['JSON']['input']>;
   async?: InputMaybe<Scalars['Boolean']['input']>;
   expectedCount?: InputMaybe<Scalars['Int']['input']>;
   labelIds?: InputMaybe<Array<Scalars['ID']['input']>>;
@@ -1336,28 +1691,28 @@ export type MutationCreateHighlightArgs = {
 };
 
 
-export type MutationCreateHighlightReplyArgs = {
-  input: CreateHighlightReplyInput;
-};
-
-
 export type MutationCreateLabelArgs = {
   input: CreateLabelInput;
 };
 
 
-export type MutationCreateReactionArgs = {
-  input: CreateReactionInput;
-};
-
-
-export type MutationCreateReminderArgs = {
-  input: CreateReminderInput;
+export type MutationCreateNewsletterEmailArgs = {
+  input?: InputMaybe<CreateNewsletterEmailInput>;
 };
 
 
 export type MutationDeleteAccountArgs = {
   userID: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteDiscoverArticleArgs = {
+  input: DeleteDiscoverArticleInput;
+};
+
+
+export type MutationDeleteDiscoverFeedArgs = {
+  input: DeleteDiscoverFeedInput;
 };
 
 
@@ -1368,11 +1723,6 @@ export type MutationDeleteFilterArgs = {
 
 export type MutationDeleteHighlightArgs = {
   highlightId: Scalars['ID']['input'];
-};
-
-
-export type MutationDeleteHighlightReplyArgs = {
-  highlightReplyId: Scalars['ID']['input'];
 };
 
 
@@ -1391,22 +1741,27 @@ export type MutationDeleteNewsletterEmailArgs = {
 };
 
 
-export type MutationDeleteReactionArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type MutationDeleteReminderArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
 export type MutationDeleteRuleArgs = {
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationDeleteWebhookArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationEditDiscoverFeedArgs = {
+  input: EditDiscoverFeedInput;
+};
+
+
+export type MutationExportToIntegrationArgs = {
+  integrationId: Scalars['ID']['input'];
+};
+
+
+export type MutationFetchContentArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1461,6 +1816,12 @@ export type MutationMoveLabelArgs = {
 };
 
 
+export type MutationMoveToFolderArgs = {
+  folder: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationOptInFeatureArgs = {
   input: OptInFeatureInput;
 };
@@ -1488,6 +1849,11 @@ export type MutationRevokeApiKeyArgs = {
 
 export type MutationSaveArticleReadingProgressArgs = {
   input: SaveArticleReadingProgressInput;
+};
+
+
+export type MutationSaveDiscoverArticleArgs = {
+  input: SaveDiscoverArticleInput;
 };
 
 
@@ -1526,11 +1892,6 @@ export type MutationSetFavoriteArticleArgs = {
 };
 
 
-export type MutationSetFollowArgs = {
-  input: SetFollowInput;
-};
-
-
 export type MutationSetIntegrationArgs = {
   input: SetIntegrationInput;
 };
@@ -1556,16 +1917,6 @@ export type MutationSetRuleArgs = {
 };
 
 
-export type MutationSetShareArticleArgs = {
-  input: SetShareArticleInput;
-};
-
-
-export type MutationSetShareHighlightArgs = {
-  input: SetShareHighlightInput;
-};
-
-
 export type MutationSetUserPersonalizationArgs = {
   input: SetUserPersonalizationInput;
 };
@@ -1587,13 +1938,18 @@ export type MutationUnsubscribeArgs = {
 };
 
 
-export type MutationUpdateHighlightArgs = {
-  input: UpdateHighlightInput;
+export type MutationUpdateEmailArgs = {
+  input: UpdateEmailInput;
 };
 
 
-export type MutationUpdateHighlightReplyArgs = {
-  input: UpdateHighlightReplyInput;
+export type MutationUpdateFilterArgs = {
+  input: UpdateFilterInput;
+};
+
+
+export type MutationUpdateHighlightArgs = {
+  input: UpdateHighlightInput;
 };
 
 
@@ -1602,23 +1958,13 @@ export type MutationUpdateLabelArgs = {
 };
 
 
-export type MutationUpdateLinkShareInfoArgs = {
-  input: UpdateLinkShareInfoInput;
+export type MutationUpdateNewsletterEmailArgs = {
+  input: UpdateNewsletterEmailInput;
 };
 
 
 export type MutationUpdatePageArgs = {
   input: UpdatePageInput;
-};
-
-
-export type MutationUpdateReminderArgs = {
-  input: UpdateReminderInput;
-};
-
-
-export type MutationUpdateSharedCommentArgs = {
-  input: UpdateSharedCommentInput;
 };
 
 
@@ -1652,7 +1998,10 @@ export type NewsletterEmail = {
   address: Scalars['String']['output'];
   confirmationCode?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Date']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  folder: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
   subscriptionCount: Scalars['Int']['output'];
 };
 
@@ -1708,7 +2057,7 @@ export type Page = {
   readableHtml: Scalars['String']['output'];
   title: Scalars['String']['output'];
   type: PageType;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   url: Scalars['String']['output'];
 };
 
@@ -1778,26 +2127,26 @@ export type Query = {
   apiKeys: ApiKeysResult;
   article: ArticleResult;
   articleSavingRequest: ArticleSavingRequestResult;
-  articles: ArticlesResult;
   deviceTokens: DeviceTokensResult;
-  feedArticles: FeedArticlesResult;
+  discoverFeeds: DiscoverFeedResult;
+  discoverTopics: GetDiscoverTopicResults;
+  feeds: FeedsResult;
   filters: FiltersResult;
-  getFollowers: GetFollowersResult;
-  getFollowing: GetFollowingResult;
+  getDiscoverFeedArticles: GetDiscoverFeedArticleResults;
   getUserPersonalization: GetUserPersonalizationResult;
   groups: GroupsResult;
   hello?: Maybe<Scalars['String']['output']>;
+  integration: IntegrationResult;
   integrations: IntegrationsResult;
   labels: LabelsResult;
   me?: Maybe<User>;
   newsletterEmails: NewsletterEmailsResult;
   recentEmails: RecentEmailsResult;
   recentSearches: RecentSearchesResult;
-  reminder: ReminderResult;
   rules: RulesResult;
+  scanFeeds: ScanFeedsResult;
   search: SearchResult;
   sendInstallInstructions: SendInstallInstructionsResult;
-  sharedArticle: SharedArticleResult;
   subscriptions: SubscriptionsResult;
   typeaheadSearch: TypeaheadSearchResult;
   updatesSince: UpdatesSinceResult;
@@ -1822,41 +2171,31 @@ export type QueryArticleSavingRequestArgs = {
 };
 
 
-export type QueryArticlesArgs = {
+export type QueryFeedsArgs = {
+  input: FeedsInput;
+};
+
+
+export type QueryGetDiscoverFeedArticlesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  discoverTopicId: Scalars['String']['input'];
+  feedId?: InputMaybe<Scalars['ID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
-  includePending?: InputMaybe<Scalars['Boolean']['input']>;
-  query?: InputMaybe<Scalars['String']['input']>;
-  sharedOnly?: InputMaybe<Scalars['Boolean']['input']>;
-  sort?: InputMaybe<SortParams>;
 };
 
 
-export type QueryFeedArticlesArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sharedByUser?: InputMaybe<Scalars['ID']['input']>;
-  sort?: InputMaybe<SortParams>;
-};
-
-
-export type QueryGetFollowersArgs = {
-  userId?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
-export type QueryGetFollowingArgs = {
-  userId?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
-export type QueryReminderArgs = {
-  linkId: Scalars['ID']['input'];
+export type QueryIntegrationArgs = {
+  name: Scalars['String']['input'];
 };
 
 
 export type QueryRulesArgs = {
   enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+export type QueryScanFeedsArgs = {
+  input: ScanFeedsInput;
 };
 
 
@@ -1866,13 +2205,6 @@ export type QuerySearchArgs = {
   format?: InputMaybe<Scalars['String']['input']>;
   includeContent?: InputMaybe<Scalars['Boolean']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QuerySharedArticleArgs = {
-  selectedHighlightId?: InputMaybe<Scalars['String']['input']>;
-  slug: Scalars['String']['input'];
-  username: Scalars['String']['input'];
 };
 
 
@@ -1891,6 +2223,7 @@ export type QueryTypeaheadSearchArgs = {
 export type QueryUpdatesSinceArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
   since: Scalars['Date']['input'];
   sort?: InputMaybe<SortParams>;
 };
@@ -2061,7 +2394,7 @@ export type RecommendationGroup = {
   members: Array<User>;
   name: Scalars['String']['output'];
   topics?: Maybe<Array<Scalars['String']['output']>>;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
 };
 
 export type RecommendingUser = {
@@ -2118,6 +2451,11 @@ export enum ReportType {
   Spam = 'SPAM'
 }
 
+export enum RepresentationType {
+  Content = 'CONTENT',
+  FeedContent = 'FEED_CONTENT'
+}
+
 export type RevokeApiKeyError = {
   __typename?: 'RevokeApiKeyError';
   errorCodes: Array<RevokeApiKeyErrorCode>;
@@ -2142,10 +2480,11 @@ export type Rule = {
   createdAt: Scalars['Date']['output'];
   enabled: Scalars['Boolean']['output'];
   eventTypes: Array<RuleEventType>;
+  failedAt?: Maybe<Scalars['Date']['output']>;
   filter: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
 };
 
 export type RuleAction = {
@@ -2162,6 +2501,7 @@ export type RuleActionInput = {
 export enum RuleActionType {
   AddLabel = 'ADD_LABEL',
   Archive = 'ARCHIVE',
+  Delete = 'DELETE',
   MarkAsRead = 'MARK_AS_READ',
   SendNotification = 'SEND_NOTIFICATION'
 }
@@ -2200,8 +2540,9 @@ export enum SaveArticleReadingProgressErrorCode {
 }
 
 export type SaveArticleReadingProgressInput = {
+  force?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['ID']['input'];
-  readingProgressAnchorIndex: Scalars['Int']['input'];
+  readingProgressAnchorIndex?: InputMaybe<Scalars['Int']['input']>;
   readingProgressPercent: Scalars['Float']['input'];
   readingProgressTopPercent?: InputMaybe<Scalars['Float']['input']>;
 };
@@ -2211,6 +2552,31 @@ export type SaveArticleReadingProgressResult = SaveArticleReadingProgressError |
 export type SaveArticleReadingProgressSuccess = {
   __typename?: 'SaveArticleReadingProgressSuccess';
   updatedArticle: Article;
+};
+
+export type SaveDiscoverArticleError = {
+  __typename?: 'SaveDiscoverArticleError';
+  errorCodes: Array<SaveDiscoverArticleErrorCode>;
+};
+
+export enum SaveDiscoverArticleErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type SaveDiscoverArticleInput = {
+  discoverArticleId: Scalars['ID']['input'];
+  locale?: InputMaybe<Scalars['String']['input']>;
+  timezone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SaveDiscoverArticleResult = SaveDiscoverArticleError | SaveDiscoverArticleSuccess;
+
+export type SaveDiscoverArticleSuccess = {
+  __typename?: 'SaveDiscoverArticleSuccess';
+  saveId: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type SaveError = {
@@ -2227,9 +2593,13 @@ export enum SaveErrorCode {
 
 export type SaveFileInput = {
   clientRequestId: Scalars['ID']['input'];
+  folder?: InputMaybe<Scalars['String']['input']>;
   labels?: InputMaybe<Array<CreateLabelInput>>;
+  publishedAt?: InputMaybe<Scalars['Date']['input']>;
+  savedAt?: InputMaybe<Scalars['Date']['input']>;
   source: Scalars['String']['input'];
   state?: InputMaybe<ArticleSavingRequestStatus>;
+  subscription?: InputMaybe<Scalars['String']['input']>;
   uploadFileId: Scalars['ID']['input'];
   url: Scalars['String']['input'];
 };
@@ -2246,11 +2616,12 @@ export enum SaveFilterErrorCode {
 }
 
 export type SaveFilterInput = {
-  category: Scalars['String']['input'];
+  category?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   filter: Scalars['String']['input'];
-  id?: InputMaybe<Scalars['ID']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  position?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SaveFilterResult = SaveFilterError | SaveFilterSuccess;
@@ -2262,6 +2633,7 @@ export type SaveFilterSuccess = {
 
 export type SavePageInput = {
   clientRequestId: Scalars['ID']['input'];
+  folder?: InputMaybe<Scalars['String']['input']>;
   labels?: InputMaybe<Array<CreateLabelInput>>;
   originalContent: Scalars['String']['input'];
   parseResult?: InputMaybe<ParseResult>;
@@ -2284,6 +2656,7 @@ export type SaveSuccess = {
 
 export type SaveUrlInput = {
   clientRequestId: Scalars['ID']['input'];
+  folder?: InputMaybe<Scalars['String']['input']>;
   labels?: InputMaybe<Array<CreateLabelInput>>;
   locale?: InputMaybe<Scalars['String']['input']>;
   publishedAt?: InputMaybe<Scalars['Date']['input']>;
@@ -2292,6 +2665,27 @@ export type SaveUrlInput = {
   state?: InputMaybe<ArticleSavingRequestStatus>;
   timezone?: InputMaybe<Scalars['String']['input']>;
   url: Scalars['String']['input'];
+};
+
+export type ScanFeedsError = {
+  __typename?: 'ScanFeedsError';
+  errorCodes: Array<ScanFeedsErrorCode>;
+};
+
+export enum ScanFeedsErrorCode {
+  BadRequest = 'BAD_REQUEST'
+}
+
+export type ScanFeedsInput = {
+  opml?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ScanFeedsResult = ScanFeedsError | ScanFeedsSuccess;
+
+export type ScanFeedsSuccess = {
+  __typename?: 'ScanFeedsSuccess';
+  feeds: Array<Feed>;
 };
 
 export type SearchError = {
@@ -2306,23 +2700,30 @@ export enum SearchErrorCode {
 
 export type SearchItem = {
   __typename?: 'SearchItem';
+  aiSummary?: Maybe<Scalars['String']['output']>;
   annotation?: Maybe<Scalars['String']['output']>;
   archivedAt?: Maybe<Scalars['Date']['output']>;
   author?: Maybe<Scalars['String']['output']>;
+  color?: Maybe<Scalars['String']['output']>;
   content?: Maybe<Scalars['String']['output']>;
   contentReader: ContentReader;
   createdAt: Scalars['Date']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  directionality?: Maybe<DirectionalityType>;
+  feedContent?: Maybe<Scalars['String']['output']>;
+  folder: Scalars['String']['output'];
   highlights?: Maybe<Array<Highlight>>;
   id: Scalars['ID']['output'];
   image?: Maybe<Scalars['String']['output']>;
   isArchived: Scalars['Boolean']['output'];
   labels?: Maybe<Array<Label>>;
   language?: Maybe<Scalars['String']['output']>;
+  links?: Maybe<Scalars['JSON']['output']>;
   originalArticleUrl?: Maybe<Scalars['String']['output']>;
   ownedByViewer?: Maybe<Scalars['Boolean']['output']>;
   pageId?: Maybe<Scalars['ID']['output']>;
   pageType: PageType;
+  previewContentType?: Maybe<Scalars['String']['output']>;
   publishedAt?: Maybe<Scalars['Date']['output']>;
   quote?: Maybe<Scalars['String']['output']>;
   readAt?: Maybe<Scalars['Date']['output']>;
@@ -2440,7 +2841,7 @@ export type SetFavoriteArticleResult = SetFavoriteArticleError | SetFavoriteArti
 
 export type SetFavoriteArticleSuccess = {
   __typename?: 'SetFavoriteArticleSuccess';
-  favoriteArticle: Article;
+  success: Scalars['Boolean']['output'];
 };
 
 export type SetFollowError = {
@@ -2481,7 +2882,11 @@ export enum SetIntegrationErrorCode {
 export type SetIntegrationInput = {
   enabled: Scalars['Boolean']['input'];
   id?: InputMaybe<Scalars['ID']['input']>;
+  importItemState?: InputMaybe<ImportItemState>;
   name: Scalars['String']['input'];
+  settings?: InputMaybe<Scalars['JSON']['input']>;
+  syncedAt?: InputMaybe<Scalars['Date']['input']>;
+  taskName?: InputMaybe<Scalars['String']['input']>;
   token: Scalars['String']['input'];
   type?: InputMaybe<IntegrationType>;
 };
@@ -2514,6 +2919,7 @@ export type SetLabelsInput = {
   labelIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   labels?: InputMaybe<Array<CreateLabelInput>>;
   pageId: Scalars['ID']['input'];
+  source?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SetLabelsResult = SetLabelsError | SetLabelsSuccess;
@@ -2611,6 +3017,7 @@ export enum SetUserPersonalizationErrorCode {
 }
 
 export type SetUserPersonalizationInput = {
+  fields?: InputMaybe<Scalars['JSON']['input']>;
   fontFamily?: InputMaybe<Scalars['String']['input']>;
   fontSize?: InputMaybe<Scalars['Int']['input']>;
   libraryLayoutType?: InputMaybe<Scalars['String']['input']>;
@@ -2723,9 +3130,13 @@ export enum SubscribeErrorCode {
 }
 
 export type SubscribeInput = {
-  name?: InputMaybe<Scalars['String']['input']>;
+  autoAddToLibrary?: InputMaybe<Scalars['Boolean']['input']>;
+  fetchContent?: InputMaybe<Scalars['Boolean']['input']>;
+  fetchContentType?: InputMaybe<FetchContentType>;
+  folder?: InputMaybe<Scalars['String']['input']>;
+  isPrivate?: InputMaybe<Scalars['Boolean']['input']>;
   subscriptionType?: InputMaybe<SubscriptionType>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['String']['input'];
 };
 
 export type SubscribeResult = SubscribeError | SubscribeSuccess;
@@ -2737,19 +3148,27 @@ export type SubscribeSuccess = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  autoAddToLibrary?: Maybe<Scalars['Boolean']['output']>;
   count: Scalars['Int']['output'];
   createdAt: Scalars['Date']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  failedAt?: Maybe<Scalars['Date']['output']>;
+  fetchContent: Scalars['Boolean']['output'];
+  fetchContentType: FetchContentType;
+  folder: Scalars['String']['output'];
   icon?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  isPrivate?: Maybe<Scalars['Boolean']['output']>;
   lastFetchedAt?: Maybe<Scalars['Date']['output']>;
+  mostRecentItemDate?: Maybe<Scalars['Date']['output']>;
   name: Scalars['String']['output'];
   newsletterEmail?: Maybe<Scalars['String']['output']>;
+  refreshedAt?: Maybe<Scalars['Date']['output']>;
   status: SubscriptionStatus;
   type: SubscriptionType;
   unsubscribeHttpUrl?: Maybe<Scalars['String']['output']>;
   unsubscribeMailTo?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   url?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2788,6 +3207,26 @@ export type SyncUpdatedItemEdge = {
   node?: Maybe<SearchItem>;
   updateReason: UpdateReason;
 };
+
+export type Task = {
+  __typename?: 'Task';
+  cancellable?: Maybe<Scalars['Boolean']['output']>;
+  createdAt: Scalars['Date']['output'];
+  failedReason?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  progress?: Maybe<Scalars['Float']['output']>;
+  runningTime?: Maybe<Scalars['Int']['output']>;
+  state: TaskState;
+};
+
+export enum TaskState {
+  Cancelled = 'CANCELLED',
+  Failed = 'FAILED',
+  Pending = 'PENDING',
+  Running = 'RUNNING',
+  Succeeded = 'SUCCEEDED'
+}
 
 export type TypeaheadSearchError = {
   __typename?: 'TypeaheadSearchError';
@@ -2834,6 +3273,58 @@ export type UnsubscribeSuccess = {
   subscription: Subscription;
 };
 
+export type UpdateEmailError = {
+  __typename?: 'UpdateEmailError';
+  errorCodes: Array<UpdateEmailErrorCode>;
+};
+
+export enum UpdateEmailErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  EmailAlreadyExists = 'EMAIL_ALREADY_EXISTS',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type UpdateEmailInput = {
+  email: Scalars['String']['input'];
+};
+
+export type UpdateEmailResult = UpdateEmailError | UpdateEmailSuccess;
+
+export type UpdateEmailSuccess = {
+  __typename?: 'UpdateEmailSuccess';
+  email: Scalars['String']['output'];
+  verificationEmailSent?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type UpdateFilterError = {
+  __typename?: 'UpdateFilterError';
+  errorCodes: Array<UpdateFilterErrorCode>;
+};
+
+export enum UpdateFilterErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  NotFound = 'NOT_FOUND',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type UpdateFilterInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<Scalars['String']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  position?: InputMaybe<Scalars['Int']['input']>;
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateFilterResult = UpdateFilterError | UpdateFilterSuccess;
+
+export type UpdateFilterSuccess = {
+  __typename?: 'UpdateFilterSuccess';
+  filter: Filter;
+};
+
 export type UpdateHighlightError = {
   __typename?: 'UpdateHighlightError';
   errorCodes: Array<UpdateHighlightErrorCode>;
@@ -2848,6 +3339,7 @@ export enum UpdateHighlightErrorCode {
 
 export type UpdateHighlightInput = {
   annotation?: InputMaybe<Scalars['String']['input']>;
+  color?: InputMaybe<Scalars['String']['input']>;
   highlightId: Scalars['ID']['input'];
   html?: InputMaybe<Scalars['String']['input']>;
   quote?: InputMaybe<Scalars['String']['input']>;
@@ -2931,6 +3423,30 @@ export type UpdateLinkShareInfoResult = UpdateLinkShareInfoError | UpdateLinkSha
 export type UpdateLinkShareInfoSuccess = {
   __typename?: 'UpdateLinkShareInfoSuccess';
   message: Scalars['String']['output'];
+};
+
+export type UpdateNewsletterEmailError = {
+  __typename?: 'UpdateNewsletterEmailError';
+  errorCodes: Array<UpdateNewsletterEmailErrorCode>;
+};
+
+export enum UpdateNewsletterEmailErrorCode {
+  BadRequest = 'BAD_REQUEST',
+  Unauthorized = 'UNAUTHORIZED'
+}
+
+export type UpdateNewsletterEmailInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  folder?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateNewsletterEmailResult = UpdateNewsletterEmailError | UpdateNewsletterEmailSuccess;
+
+export type UpdateNewsletterEmailSuccess = {
+  __typename?: 'UpdateNewsletterEmailSuccess';
+  newsletterEmail: NewsletterEmail;
 };
 
 export type UpdatePageError = {
@@ -3030,10 +3546,19 @@ export enum UpdateSubscriptionErrorCode {
 }
 
 export type UpdateSubscriptionInput = {
+  autoAddToLibrary?: InputMaybe<Scalars['Boolean']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  failedAt?: InputMaybe<Scalars['Date']['input']>;
+  fetchContent?: InputMaybe<Scalars['Boolean']['input']>;
+  fetchContentType?: InputMaybe<FetchContentType>;
+  folder?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
-  lastFetchedAt?: InputMaybe<Scalars['Date']['input']>;
+  isPrivate?: InputMaybe<Scalars['Boolean']['input']>;
+  lastFetchedChecksum?: InputMaybe<Scalars['String']['input']>;
+  mostRecentItemDate?: InputMaybe<Scalars['Date']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  refreshedAt?: InputMaybe<Scalars['Date']['input']>;
+  scheduledAt?: InputMaybe<Scalars['Date']['input']>;
   status?: InputMaybe<SubscriptionStatus>;
 };
 
@@ -3171,9 +3696,13 @@ export enum UploadImportFileType {
 
 export type User = {
   __typename?: 'User';
+  email?: Maybe<Scalars['String']['output']>;
+  featureList?: Maybe<Array<Feature>>;
+  features?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   followersCount?: Maybe<Scalars['Int']['output']>;
   friendsCount?: Maybe<Scalars['Int']['output']>;
   id: Scalars['ID']['output'];
+  intercomHash?: Maybe<Scalars['String']['output']>;
   /** @deprecated isFriend has been replaced with viewerIsFollowing */
   isFriend?: Maybe<Scalars['Boolean']['output']>;
   isFullUser?: Maybe<Scalars['Boolean']['output']>;
@@ -3184,6 +3713,7 @@ export type User = {
   sharedArticlesCount?: Maybe<Scalars['Int']['output']>;
   sharedHighlightsCount?: Maybe<Scalars['Int']['output']>;
   sharedNotesCount?: Maybe<Scalars['Int']['output']>;
+  source?: Maybe<Scalars['String']['output']>;
   viewerIsFollowing?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -3200,6 +3730,7 @@ export enum UserErrorCode {
 
 export type UserPersonalization = {
   __typename?: 'UserPersonalization';
+  fields?: Maybe<Scalars['JSON']['output']>;
   fontFamily?: Maybe<Scalars['String']['output']>;
   fontSize?: Maybe<Scalars['Int']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
@@ -3244,7 +3775,7 @@ export type Webhook = {
   eventTypes: Array<WebhookEvent>;
   id: Scalars['ID']['output'];
   method: Scalars['String']['output'];
-  updatedAt: Scalars['Date']['output'];
+  updatedAt?: Maybe<Scalars['Date']['output']>;
   url: Scalars['String']['output'];
 };
 
@@ -3324,6 +3855,11 @@ export type LabelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type LabelsQuery = { __typename?: 'Query', labels: { __typename?: 'LabelsError', errorCodes: Array<LabelsErrorCode> } | { __typename?: 'LabelsSuccess', labels: Array<{ __typename?: 'Label', id: string, name: string, color: string, description?: string | null, createdAt?: any | null, position?: number | null, internal?: boolean | null }> } };
 
+export type FiltersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FiltersQuery = { __typename?: 'Query', filters: { __typename?: 'FiltersError', errorCodes: Array<FiltersErrorCode> } | { __typename?: 'FiltersSuccess', filters: Array<{ __typename?: 'Filter', id: string, name: string, filter: string, position: number, folder?: string | null, description?: string | null, defaultFilter?: boolean | null, visible?: boolean | null, category?: string | null }> } };
+
 export type SearchQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -3331,7 +3867,7 @@ export type SearchQueryVariables = Exact<{
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search: { __typename?: 'SearchError', errorCodes: Array<SearchErrorCode> } | { __typename?: 'SearchSuccess', edges: Array<{ __typename?: 'SearchItemEdge', cursor: string, node: { __typename?: 'SearchItem', id: string, title: string, slug: string, url: string, pageType: PageType, contentReader: ContentReader, createdAt: any, isArchived: boolean, readingProgressPercent: number, readingProgressTopPercent?: number | null, readingProgressAnchorIndex: number, author?: string | null, image?: string | null, description?: string | null, publishedAt?: any | null, ownedByViewer?: boolean | null, originalArticleUrl?: string | null, uploadFileId?: string | null, pageId?: string | null, shortId?: string | null, quote?: string | null, annotation?: string | null, state?: ArticleSavingRequestStatus | null, siteName?: string | null, subscription?: string | null, readAt?: any | null, savedAt: any, wordsCount?: number | null, labels?: Array<{ __typename?: 'Label', id: string, name: string, color: string }> | null, highlights?: Array<{ __typename?: 'Highlight', id: string, type: HighlightType, shortId: string, quote?: string | null, prefix?: string | null, suffix?: string | null, patch?: string | null, annotation?: string | null, createdByMe: boolean, createdAt: any, updatedAt: any, sharedAt?: any | null, highlightPositionPercent?: number | null, highlightPositionAnchorIndex?: number | null, labels?: Array<{ __typename?: 'Label', id: string, name: string, color: string, createdAt?: any | null }> | null }> | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null, totalCount?: number | null } } };
+export type SearchQuery = { __typename?: 'Query', search: { __typename?: 'SearchError', errorCodes: Array<SearchErrorCode> } | { __typename?: 'SearchSuccess', edges: Array<{ __typename?: 'SearchItemEdge', cursor: string, node: { __typename?: 'SearchItem', id: string, title: string, slug: string, url: string, pageType: PageType, contentReader: ContentReader, createdAt: any, isArchived: boolean, readingProgressPercent: number, readingProgressTopPercent?: number | null, readingProgressAnchorIndex: number, author?: string | null, image?: string | null, description?: string | null, publishedAt?: any | null, ownedByViewer?: boolean | null, originalArticleUrl?: string | null, uploadFileId?: string | null, pageId?: string | null, shortId?: string | null, quote?: string | null, annotation?: string | null, state?: ArticleSavingRequestStatus | null, siteName?: string | null, subscription?: string | null, readAt?: any | null, savedAt: any, wordsCount?: number | null, labels?: Array<{ __typename?: 'Label', id: string, name: string, color: string }> | null, highlights?: Array<{ __typename?: 'Highlight', id: string, type: HighlightType, shortId: string, quote?: string | null, prefix?: string | null, suffix?: string | null, patch?: string | null, annotation?: string | null, createdByMe: boolean, createdAt: any, updatedAt?: any | null, sharedAt?: any | null, highlightPositionPercent?: number | null, highlightPositionAnchorIndex?: number | null, labels?: Array<{ __typename?: 'Label', id: string, name: string, color: string, createdAt?: any | null }> | null }> | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null, totalCount?: number | null } } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3343,5 +3879,6 @@ export const SetArchiveStatusDocument = {"kind":"Document","definitions":[{"kind
 export const CreateArticleSavingRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateArticleSavingRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateArticleSavingRequestInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createArticleSavingRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CreateArticleSavingRequestSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"articleSavingRequest"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CreateArticleSavingRequestError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errorCodes"}}]}}]}}]}}]} as unknown as DocumentNode<CreateArticleSavingRequestMutation, CreateArticleSavingRequestMutationVariables>;
 export const SetLabelsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetLabels"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pageId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"labelIds"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"labels"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateLabelInput"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setLabels"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"pageId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pageId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"labelIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"labelIds"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"labels"},"value":{"kind":"Variable","name":{"kind":"Name","value":"labels"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SetLabelsError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errorCodes"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SetLabelsSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SetLabelsMutation, SetLabelsMutationVariables>;
 export const LabelsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LabelsError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errorCodes"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"LabelsSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"internal"}}]}}]}}]}}]}}]} as unknown as DocumentNode<LabelsQuery, LabelsQueryVariables>;
+export const FiltersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Filters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"filters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FiltersError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errorCodes"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FiltersSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"filters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"filter"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"folder"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"defaultFilter"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]}}]}}]} as unknown as DocumentNode<FiltersQuery, FiltersQueryVariables>;
 export const SearchDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Search"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"query"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"search"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"query"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SearchError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errorCodes"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SearchSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"pageType"}},{"kind":"Field","name":{"kind":"Name","value":"contentReader"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"readingProgressPercent"}},{"kind":"Field","name":{"kind":"Name","value":"readingProgressTopPercent"}},{"kind":"Field","name":{"kind":"Name","value":"readingProgressAnchorIndex"}},{"kind":"Field","name":{"kind":"Name","value":"author"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"publishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"ownedByViewer"}},{"kind":"Field","name":{"kind":"Name","value":"originalArticleUrl"}},{"kind":"Field","name":{"kind":"Name","value":"uploadFileId"}},{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageId"}},{"kind":"Field","name":{"kind":"Name","value":"shortId"}},{"kind":"Field","name":{"kind":"Name","value":"quote"}},{"kind":"Field","name":{"kind":"Name","value":"annotation"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"siteName"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"savedAt"}},{"kind":"Field","name":{"kind":"Name","value":"wordsCount"}},{"kind":"Field","name":{"kind":"Name","value":"highlights"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"shortId"}},{"kind":"Field","name":{"kind":"Name","value":"quote"}},{"kind":"Field","name":{"kind":"Name","value":"prefix"}},{"kind":"Field","name":{"kind":"Name","value":"suffix"}},{"kind":"Field","name":{"kind":"Name","value":"patch"}},{"kind":"Field","name":{"kind":"Name","value":"annotation"}},{"kind":"Field","name":{"kind":"Name","value":"createdByMe"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"sharedAt"}},{"kind":"Field","name":{"kind":"Name","value":"highlightPositionPercent"}},{"kind":"Field","name":{"kind":"Name","value":"highlightPositionAnchorIndex"}},{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SearchQuery, SearchQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"isFullUser"}},{"kind":"Field","name":{"kind":"Name","value":"picture"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"private"}},{"kind":"Field","name":{"kind":"Name","value":"pictureUrl"}}]}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
